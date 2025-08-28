@@ -94,106 +94,106 @@ Custom Client → API Authentication → Permission Validation → Backend Logic
 flowchart TB
     subgraph "Frontend Layer"
         subgraph "Custom Headless Clients (Our Implementation)"
-            REACT["🖥️ React Frontend<br/>(API-only)"]
-            MOBILE["📱 Mobile App<br/>(API-only)"]
-            INTEGRATION["🔗 Third-party Integration<br/>(API-only)"]
+            REACT["🖥️ React Frontend<br/>(API-only)<br/>• Custom UI components<br/>• Direct API calls<br/>• State management"]
+            MOBILE["📱 Mobile App<br/>(API-only)<br/>• Native/hybrid apps<br/>• REST API integration<br/>• Offline capabilities"]
+            INTEGRATION["🔗 Third-party Integration<br/>(API-only)<br/>• External systems<br/>• Webhook consumers<br/>• Data synchronization"]
         end
         
         subgraph "Frappe Web UI (BYPASSED)"
-            WEBUI["❌ Frappe Desk<br/>❌ Web Forms<br/>❌ Frontend JS<br/>(NOT USED)"]
-            FRAPPECALL["❌ frappe.call()<br/>❌ frappe.xcall()<br/>(NOT USED)"]
+            WEBUI["❌ Frappe Desk<br/>❌ Web Forms<br/>❌ Frontend JS<br/>(NOT USED)<br/>• Traditional web interface<br/>• Built-in forms & views<br/>• JavaScript framework"]
+            FRAPPECALL["❌ frappe.call()<br/>❌ frappe.xcall()<br/>(NOT USED)<br/>• Client-side API wrapper<br/>• Web-specific functions<br/>• Session management"]
         end
     end
     
     subgraph "Frappe Framework Backend"
         subgraph "WSGI Application Layer"
-            WSGI["🌐 WSGI App<br/>(app.py)"]
-            REQROUTER["🚦 Request Router<br/>(/api/* routing)"]
+            WSGI["🌐 WSGI App<br/>(app.py)<br/>• HTTP request entry point<br/>• Request/response handling<br/>• Error management<br/>• Middleware integration"]
+            REQROUTER["🚦 Request Router<br/>(/api/* routing)<br/>• URL pattern matching<br/>• API version detection<br/>• Route to handlers<br/>• Legacy support"]
         end
         
         subgraph "API Layer - Versioned"
-            APIV1["📡 API v1<br/>/api/method/*<br/>/api/resource/*<br/>(Legacy RPC)"]
-            APIV2["📡 API v2<br/>/api/v2/method/*<br/>/api/v2/document/*<br/>(Modern REST)"]
-            HANDLER["⚙️ Handler<br/>(execute_cmd)"]
+            APIV1["📡 API v1<br/>/api/method/*<br/>/api/resource/*<br/>(Legacy RPC)<br/>• RPC-style calls<br/>• Backward compatibility<br/>• Simple CRUD operations<br/>• Method-based routing"]
+            APIV2["📡 API v2<br/>/api/v2/method/*<br/>/api/v2/document/*<br/>(Modern REST)<br/>• RESTful design<br/>• Enhanced querying<br/>• Better error handling<br/>• Controller customization"]
+            HANDLER["⚙️ Handler<br/>(execute_cmd)<br/>• Method resolution<br/>• Parameter processing<br/>• Request validation<br/>• Response formatting"]
         end
         
         subgraph "Authentication & Security"
-            AUTH{"🔐 Authentication<br/>Session/API Key/CSRF"}
-            WHITELIST["✅ Method Whitelisting<br/>@frappe.whitelist()"]
+            AUTH{"🔐 Authentication<br/>Session/API Key/CSRF<br/>• Multi-method auth<br/>• Token validation<br/>• Session management<br/>• Security headers"}
+            WHITELIST["✅ Method Whitelisting<br/>@frappe.whitelist()<br/>• Decorator-based security<br/>• Method access control<br/>• API exposure control<br/>• Permission validation"]
         end
         
         subgraph "Core Processing Engine"
-            PERM["🛡️ Permission Engine<br/>Role-based Access"]
-            CRUD["📋 CRUD Operations<br/>Document Lifecycle"]
-            EAV["🏗️ Custom Fields (EAV)<br/>Dynamic Schema"]
-            FILES["📁 File Operations<br/>Upload/Download"]
-            HOOKS["⚡ Business Logic<br/>Server Scripts/Hooks"]
-            VALID["✅ Data Validation<br/>DocType Rules"]
+            PERM["🛡️ Permission Engine<br/>Role-based Access<br/>• User role validation<br/>• DocType permissions<br/>• Field-level security<br/>• Custom permission logic"]
+            CRUD["📋 CRUD Operations<br/>Document Lifecycle<br/>• Create/Read/Update/Delete<br/>• Data validation<br/>• Business rule enforcement<br/>• Relationship management"]
+            EAV["🏗️ Custom Fields (EAV)<br/>Dynamic Schema<br/>• Runtime field creation<br/>• Type validation<br/>• Schema flexibility<br/>• Metadata management"]
+            FILES["📁 File Operations<br/>Upload/Download<br/>• Binary file handling<br/>• Storage management<br/>• Access control<br/>• Metadata tracking"]
+            HOOKS["⚡ Business Logic<br/>Server Scripts/Hooks<br/>• Before/after events<br/>• Custom validations<br/>• Integration triggers<br/>• Workflow automation"]
+            VALID["✅ Data Validation<br/>DocType Rules<br/>• Type checking<br/>• Required field validation<br/>• Format validation<br/>• Business rule validation"]
         end
         
         subgraph "Data Layer"
-            DB[("🗄️ MariaDB<br/>Documents & Metadata")]
-            FILESYSTEM["💾 File System<br/>Private/Public Files"]
-            CACHE["⚡ Redis Cache<br/>Session/Performance"]
+            DB[("🗄️ MariaDB<br/>Documents & Metadata<br/>• Primary data storage<br/>• ACID transactions<br/>• Relationship integrity<br/>• Query optimization")]
+            FILESYSTEM["💾 File System<br/>Private/Public Files<br/>• Binary storage<br/>• Directory structure<br/>• File permissions<br/>• Backup integration"]
+            CACHE["⚡ Redis Cache<br/>Session/Performance<br/>• Query result caching<br/>• Session storage<br/>• Temporary data<br/>• Performance optimization"]
         end
         
         subgraph "Real-time Communication"
-            WS["🔄 WebSocket Server<br/>Live Updates"]
-            EVENTS["📡 Event Broadcasting<br/>Document Changes"]
+            WS["🔄 WebSocket Server<br/>Live Updates<br/>• Persistent connections<br/>• Real-time messaging<br/>• Channel management<br/>• Event distribution"]
+            EVENTS["📡 Event Broadcasting<br/>Document Changes<br/>• Document lifecycle events<br/>• Custom event triggers<br/>• User notifications<br/>• System status updates"]
         end
     end
     
     %% Frontend to Backend Flow
-    REACT -->|"HTTP REST API<br/>JSON + Headers"| WSGI
-    MOBILE -->|"HTTP REST API<br/>JSON + Headers"| WSGI
-    INTEGRATION -->|"HTTP REST API<br/>JSON + Headers"| WSGI
+    REACT -->|"HTTP REST API<br/>JSON + Headers<br/>• Authentication tokens<br/>• Content-Type: application/json<br/>• Custom headers"| WSGI
+    MOBILE -->|"HTTP REST API<br/>JSON + Headers<br/>• API key authentication<br/>• Mobile-specific headers<br/>• Compressed responses"| WSGI
+    INTEGRATION -->|"HTTP REST API<br/>JSON + Headers<br/>• Service-to-service auth<br/>• Webhook callbacks<br/>• Batch operations"| WSGI
     
     %% Bypassed Traditional Flow
-    WEBUI -.->|"❌ BYPASSED"| FRAPPECALL
-    FRAPPECALL -.->|"❌ BYPASSED"| WSGI
+    WEBUI -.->|"❌ BYPASSED<br/>• No web routes<br/>• No HTML rendering<br/>• No client-side JS"| FRAPPECALL
+    FRAPPECALL -.->|"❌ BYPASSED<br/>• No web session<br/>• No DOM manipulation<br/>• No browser dependencies"| WSGI
     
     %% Request Processing Pipeline
-    WSGI --> REQROUTER
-    REQROUTER --> APIV1
-    REQROUTER --> APIV2
-    APIV1 --> HANDLER
-    APIV2 --> HANDLER
-    HANDLER --> AUTH
-    AUTH --> WHITELIST
-    WHITELIST --> PERM
+    WSGI -->|"Request parsing<br/>• HTTP method extraction<br/>• Header processing<br/>• Body parsing"| REQROUTER
+    REQROUTER -->|"Legacy routing<br/>• /api/method/*<br/>• /api/resource/*<br/>• Backward compatibility"| APIV1
+    REQROUTER -->|"Modern routing<br/>• /api/v2/document/*<br/>• RESTful endpoints<br/>• Enhanced features"| APIV2
+    APIV1 -->|"Method resolution<br/>• Function lookup<br/>• Parameter mapping<br/>• Legacy support"| HANDLER
+    APIV2 -->|"Controller dispatch<br/>• REST semantics<br/>• Enhanced querying<br/>• Modern features"| HANDLER
+    HANDLER -->|"Security check<br/>• Token validation<br/>• Session verification<br/>• CSRF protection"| AUTH
+    AUTH -->|"Access control<br/>• Method availability<br/>• Public API check<br/>• Decorator validation"| WHITELIST
+    WHITELIST -->|"Permission validation<br/>• User role check<br/>• Resource access<br/>• Field permissions"| PERM
     
     %% Core Processing Flow
-    PERM --> CRUD
-    PERM --> EAV
-    PERM --> FILES
-    CRUD --> VALID
-    EAV --> VALID
-    FILES --> VALID
-    VALID --> HOOKS
+    PERM -->|"CRUD authorization<br/>• Create/read/update/delete<br/>• Resource-level access<br/>• Operation permissions"| CRUD
+    PERM -->|"Schema access<br/>• Custom field permissions<br/>• Metadata operations<br/>• Dynamic schema"| EAV
+    PERM -->|"File access<br/>• Upload/download rights<br/>• File permissions<br/>• Storage access"| FILES
+    CRUD -->|"Data validation<br/>• Type checking<br/>• Required fields<br/>• Business rules"| VALID
+    EAV -->|"Schema validation<br/>• Field type validation<br/>• Custom field rules<br/>• Metadata integrity"| VALID
+    FILES -->|"File validation<br/>• File type checking<br/>• Size limits<br/>• Security scanning"| VALID
+    VALID -->|"Business logic<br/>• Before/after hooks<br/>• Custom validations<br/>• Workflow triggers"| HOOKS
     
     %% Data Operations
-    HOOKS --> DB
-    FILES --> FILESYSTEM
-    CRUD --> CACHE
-    HOOKS --> CACHE
+    HOOKS -->|"Data persistence<br/>• INSERT/UPDATE/DELETE<br/>• Transaction management<br/>• Relationship updates"| DB
+    FILES -->|"File storage<br/>• Binary write/read<br/>• Directory management<br/>• File metadata"| FILESYSTEM
+    CRUD -->|"Cache operations<br/>• Query result caching<br/>• Data invalidation<br/>• Performance optimization"| CACHE
+    HOOKS -->|"Cache updates<br/>• Event-based invalidation<br/>• Computed field caching<br/>• Session updates"| CACHE
     
     %% Real-time Updates
-    HOOKS --> WS
-    WS --> EVENTS
-    EVENTS -->|"WebSocket Events"| REACT
-    EVENTS -->|"WebSocket Events"| MOBILE
+    HOOKS -->|"Event triggers<br/>• Document events<br/>• Custom events<br/>• System notifications"| WS
+    WS -->|"Event distribution<br/>• Channel broadcasting<br/>• User notifications<br/>• Real-time updates"| EVENTS
+    EVENTS -->|"WebSocket Events<br/>• Document changes<br/>• User notifications<br/>• System updates"| REACT
+    EVENTS -->|"WebSocket Events<br/>• Push notifications<br/>• Real-time sync<br/>• Status updates"| MOBILE
     
     %% Response Flow
-    DB --> CACHE
-    CACHE --> HANDLER
-    HANDLER --> APIV1
-    HANDLER --> APIV2
-    APIV1 --> REQROUTER
-    APIV2 --> REQROUTER
-    REQROUTER --> WSGI
-    WSGI -->|"JSON Response"| REACT
-    WSGI -->|"JSON Response"| MOBILE
-    WSGI -->|"JSON Response"| INTEGRATION
+    DB -->|"Query results<br/>• Data retrieval<br/>• Relationship data<br/>• Computed fields"| CACHE
+    CACHE -->|"Cached data<br/>• Performance optimization<br/>• Reduced DB load<br/>• Fast responses"| HANDLER
+    HANDLER -->|"Response formatting<br/>• JSON serialization<br/>• Error handling<br/>• Status codes"| APIV1
+    HANDLER -->|"REST response<br/>• HTTP semantics<br/>• Enhanced formatting<br/>• Better error messages"| APIV2
+    APIV1 -->|"Legacy response<br/>• RPC-style format<br/>• Backward compatibility<br/>• Simple structure"| REQROUTER
+    APIV2 -->|"Modern response<br/>• RESTful format<br/>• Enhanced metadata<br/>• Improved structure"| REQROUTER
+    REQROUTER -->|"HTTP response<br/>• Status codes<br/>• Headers<br/>• Response routing"| WSGI
+    WSGI -->|"JSON Response<br/>• Formatted data<br/>• Error messages<br/>• Success indicators"| REACT
+    WSGI -->|"JSON Response<br/>• Mobile-optimized<br/>• Compressed data<br/>• Efficient format"| MOBILE
+    WSGI -->|"JSON Response<br/>• Integration format<br/>• Batch responses<br/>• Service data"| INTEGRATION
     
     %% Styling
     classDef headlessStyle fill:#e3f2fd,stroke:#1976d2,stroke-width:3px
@@ -215,7 +215,36 @@ flowchart TB
     class WS,EVENTS realtimeStyle
  ```
 
-### 3.2 How We Make Frappe Headless: Complete System Explanation
+### 3.2 Diagram Component Explanations
+
+#### **Color Coding Legend**
+- 🔵 **Blue (Headless Clients)**: Our custom implementations that replace Frappe's web interface
+- 🔴 **Red (Bypassed Components)**: Traditional Frappe web components we don't use
+- 🟣 **Purple (WSGI Layer)**: Core HTTP handling and request routing
+- 🟢 **Green (API Layer)**: Versioned API endpoints and handlers
+- 🟡 **Yellow (Security Layer)**: Authentication and authorization components
+- 🟢 **Teal (Processing Engine)**: Core business logic and data processing
+- 🟠 **Orange (Data Layer)**: Storage and caching systems
+- 🟣 **Pink (Real-time)**: WebSocket and event broadcasting
+
+#### **Flow Explanations**
+
+**1. Request Flow (Frontend → Backend)**
+- **Solid arrows**: Active data flow paths used in headless mode
+- **Dashed arrows**: Bypassed traditional web flows
+- **Labeled connections**: Detailed information about data format and purpose
+
+**2. Processing Pipeline**
+- **Sequential flow**: Each request follows a specific path through security, validation, and processing
+- **Parallel processing**: Some operations (CRUD, EAV, Files) can happen simultaneously
+- **Bidirectional flow**: Data flows both ways between cache and database
+
+**3. Response Flow (Backend → Frontend)**
+- **JSON-only responses**: All data returned in structured JSON format
+- **Multiple client support**: Same backend serves React, Mobile, and Integration clients
+- **Real-time updates**: WebSocket events provide live updates independent of request/response cycle
+
+### 3.3 How We Make Frappe Headless: Complete System Explanation
 
 #### **Overview**
 Frappe Framework is traditionally a full-stack web application framework with an integrated web interface. **We are making it headless** by bypassing the web UI entirely and using only its REST API endpoints for all operations. This approach leverages Frappe's existing backend infrastructure while eliminating dependency on its frontend components.
