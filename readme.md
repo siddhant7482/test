@@ -1,4 +1,4 @@
-# Frappe Framework REST API: Comprehensive Technical Guide
+# Making Frappe Framework Headless: Comprehensive Technical Guide
 
 ## Table of Contents
 
@@ -19,56 +19,70 @@
 
 ## 1. Executive Summary
 
-This comprehensive guide documents the complete analysis of Frappe Framework's REST API capabilities, conducted through systematic testing and validation. The analysis confirms that Frappe provides a **robust, production-ready REST API** suitable for headless operation with 100% success rate across all core functionalities.
+This comprehensive guide documents our systematic approach to **making Frappe Framework operate in a completely headless manner** by utilizing only its REST API capabilities while bypassing the entire web interface. Our analysis confirms that Frappe's backend infrastructure can be successfully repurposed for headless operation with 100% success rate across all core functionalities.
 
 ### Key Findings:
-- ✅ **Complete REST API Coverage**: Full CRUD operations with multiple API versions
-- ✅ **Flexible Authentication**: Session-based and API key authentication
-- ✅ **Dynamic Schema Management**: EAV implementation via Custom Fields
-- ✅ **Comprehensive File Operations**: Upload, download, listing, and deletion
-- ✅ **Real-time Capabilities**: WebSocket integration for live updates
-- ✅ **Production Ready**: Excellent performance and scalability characteristics
+- ✅ **Successful Web UI Bypass**: Complete elimination of Frappe's web interface dependency
+- ✅ **Full API Utilization**: All CRUD operations work seamlessly through REST endpoints
+- ✅ **Backend Security Preserved**: Role-based permissions and authentication work in headless mode
+- ✅ **Dynamic Schema via API**: EAV implementation through Custom Fields API
+- ✅ **File Management Without Web**: Complete file operations through API endpoints
+- ✅ **Real-time Communication**: WebSocket events work independently of web interface
+- ✅ **Production Viability**: Excellent performance characteristics in headless configuration
 
 ---
 
 ## 2. Frappe REST API Architecture Overview
 
-### 2.1 API Design Philosophy
+### 2.1 Headless Transformation Philosophy
 
-Frappe Framework follows a **resource-oriented REST architecture** with the following principles:
+Our approach to making Frappe headless follows these **strategic principles**:
 
-1. **Resource-Based URLs**: Each DocType is treated as a resource
-2. **HTTP Method Semantics**: Standard HTTP methods for operations
-3. **Stateless Communication**: Each request contains all necessary information
-4. **Consistent Response Format**: Standardized JSON response structure
-5. **Version Support**: Multiple API versions for backward compatibility
+1. **Complete Web UI Bypass**: Eliminate all dependencies on Frappe's web interface
+2. **API-First Operation**: Use only REST endpoints for all system interactions
+3. **Backend Infrastructure Reuse**: Leverage existing business logic, permissions, and data layer
+4. **Stateless Client Communication**: Each API call independent of web session state
+5. **Preserved Functionality**: Maintain all Frappe capabilities without web interface
+6. **Custom Frontend Freedom**: Enable any frontend technology through API integration
 
-### 2.2 API Endpoint Structure
+### 2.2 Headless API Utilization Strategy
 
-Frappe provides multiple API endpoint patterns:
+We utilize Frappe's existing API endpoints for complete headless operation:
 
 ```
-# Resource API (v1)
-/api/resource/{doctype}
-/api/resource/{doctype}/{name}
+# Primary CRUD Operations (Our Main Interface)
+/api/resource/{doctype}          # List and create documents
+/api/resource/{doctype}/{name}   # Read, update, delete specific documents
 
-# Document API (v2)
-/api/v2/document/{doctype}
+# Enhanced Document Operations
+/api/v2/document/{doctype}       # Alternative document interface
 /api/v2/document/{doctype}/{name}
 
-# Method API
-/api/method/{method_name}
+# Custom Business Logic
+/api/method/{method_name}        # Execute custom server methods
 
-# File API
-/api/method/upload_file
-/files/{filename}
+# File Operations (Web-Free)
+/api/method/upload_file          # File uploads without web forms
+/files/{filename}                # Direct file access
+
+# Authentication (Bypassing Web Login)
+/api/method/login                # Session establishment
+/api/method/logout               # Session termination
 ```
 
-### 2.3 Request/Response Flow
+### 2.3 Headless Request/Response Flow
 
 ```
-Client Request → Authentication Layer → Permission Check → Business Logic → Database → Response
+Custom Client → API Authentication → Permission Validation → Backend Logic → Data Layer → JSON Response
+     ↑                                                                                        ↓
+(Bypasses Web UI)                                                                    (No HTML Rendering)
 ```
+
+**Key Differences from Web Operation:**
+- **No Web Routes**: Skip `/desk`, `/app`, and web-specific endpoints
+- **JSON-Only**: All responses in JSON format, no HTML rendering
+- **Stateless**: No dependency on web session state
+- **Direct API**: No JavaScript framework dependencies
 
 ---
 
@@ -78,121 +92,200 @@ Client Request → Authentication Layer → Permission Check → Business Logic 
 
 ```mermaid
 flowchart TB
-    subgraph "Client Applications"
-        CLI["🖥️ React Frontend<br/>📱 Mobile App<br/>🔗 Third-party Integration"]
-    end
-    
-    subgraph "Authentication Layer"
-        AUTH{"🔐 Authentication"}
-        SESSION["📝 Session-based<br/>(Cookies)"]
-        APIKEY["🔑 API Key<br/>(Token)"]
-    end
-    
-    subgraph "Frappe Framework Core"
-        ROUTER["🚦 API Router<br/>/api/resource/*<br/>/api/method/*<br/>/api/v2/document/*"]
-        PERM["🛡️ Permission Engine<br/>Role-based Access"]
-        
-        subgraph "Business Logic Layer"
-            CRUD["📋 CRUD Operations"]
-            EAV["🏗️ EAV/Custom Fields"]
-            FILES["📁 File Operations"]
-            HOOKS["⚡ Business Hooks"]
+    subgraph "Frontend Layer"
+        subgraph "Custom Headless Clients (Our Implementation)"
+            REACT["🖥️ React Frontend<br/>(API-only)"]
+            MOBILE["📱 Mobile App<br/>(API-only)"]
+            INTEGRATION["🔗 Third-party Integration<br/>(API-only)"]
         end
         
-        subgraph "Data Processing"
-            VALID["✅ Data Validation"]
-            TRANSFORM["🔄 Data Transformation"]
-            CACHE["⚡ Redis Cache"]
+        subgraph "Frappe Web UI (BYPASSED)"
+            WEBUI["❌ Frappe Desk<br/>❌ Web Forms<br/>❌ Frontend JS<br/>(NOT USED)"]
+            FRAPPECALL["❌ frappe.call()<br/>❌ frappe.xcall()<br/>(NOT USED)"]
         end
     end
     
-    subgraph "Storage Layer"
-        DB[("🗄️ MariaDB<br/>Documents & Metadata")]
-        FILESYSTEM["💾 File System<br/>Binary Files"]
-        CUSTOMDB[("🔧 Custom Fields<br/>Schema Metadata")]
+    subgraph "Frappe Framework Backend"
+        subgraph "WSGI Application Layer"
+            WSGI["🌐 WSGI App<br/>(app.py)"]
+            REQROUTER["🚦 Request Router<br/>(/api/* routing)"]
+        end
+        
+        subgraph "API Layer - Versioned"
+            APIV1["📡 API v1<br/>/api/method/*<br/>/api/resource/*<br/>(Legacy RPC)"]
+            APIV2["📡 API v2<br/>/api/v2/method/*<br/>/api/v2/document/*<br/>(Modern REST)"]
+            HANDLER["⚙️ Handler<br/>(execute_cmd)"]
+        end
+        
+        subgraph "Authentication & Security"
+            AUTH{"🔐 Authentication<br/>Session/API Key/CSRF"}
+            WHITELIST["✅ Method Whitelisting<br/>@frappe.whitelist()"]
+        end
+        
+        subgraph "Core Processing Engine"
+            PERM["🛡️ Permission Engine<br/>Role-based Access"]
+            CRUD["📋 CRUD Operations<br/>Document Lifecycle"]
+            EAV["🏗️ Custom Fields (EAV)<br/>Dynamic Schema"]
+            FILES["📁 File Operations<br/>Upload/Download"]
+            HOOKS["⚡ Business Logic<br/>Server Scripts/Hooks"]
+            VALID["✅ Data Validation<br/>DocType Rules"]
+        end
+        
+        subgraph "Data Layer"
+            DB[("🗄️ MariaDB<br/>Documents & Metadata")]
+            FILESYSTEM["💾 File System<br/>Private/Public Files"]
+            CACHE["⚡ Redis Cache<br/>Session/Performance"]
+        end
+        
+        subgraph "Real-time Communication"
+            WS["🔄 WebSocket Server<br/>Live Updates"]
+            EVENTS["📡 Event Broadcasting<br/>Document Changes"]
+        end
     end
     
-    subgraph "Real-time Communication"
-        WS["🔄 WebSocket Server"]
-        EVENTS["📡 Event Broadcasting"]
-    end
+    %% Frontend to Backend Flow
+    REACT -->|"HTTP REST API<br/>JSON + Headers"| WSGI
+    MOBILE -->|"HTTP REST API<br/>JSON + Headers"| WSGI
+    INTEGRATION -->|"HTTP REST API<br/>JSON + Headers"| WSGI
     
-    %% Main Flow
-    CLI --> AUTH
-    AUTH --> SESSION
-    AUTH --> APIKEY
-    SESSION --> ROUTER
-    APIKEY --> ROUTER
+    %% Bypassed Traditional Flow
+    WEBUI -.->|"❌ BYPASSED"| FRAPPECALL
+    FRAPPECALL -.->|"❌ BYPASSED"| WSGI
     
-    ROUTER --> PERM
+    %% Request Processing Pipeline
+    WSGI --> REQROUTER
+    REQROUTER --> APIV1
+    REQROUTER --> APIV2
+    APIV1 --> HANDLER
+    APIV2 --> HANDLER
+    HANDLER --> AUTH
+    AUTH --> WHITELIST
+    WHITELIST --> PERM
+    
+    %% Core Processing Flow
     PERM --> CRUD
     PERM --> EAV
     PERM --> FILES
-    
     CRUD --> VALID
     EAV --> VALID
     FILES --> VALID
+    VALID --> HOOKS
     
-    VALID --> TRANSFORM
-    TRANSFORM --> CACHE
-    CACHE --> DB
-    
-    CRUD --> HOOKS
-    EAV --> HOOKS
-    FILES --> HOOKS
-    
-    %% Storage Connections
-    TRANSFORM --> DB
+    %% Data Operations
+    HOOKS --> DB
     FILES --> FILESYSTEM
-    EAV --> CUSTOMDB
+    CRUD --> CACHE
+    HOOKS --> CACHE
     
-    %% Real-time Connections
+    %% Real-time Updates
     HOOKS --> WS
     WS --> EVENTS
-    EVENTS --> CLI
+    EVENTS -->|"WebSocket Events"| REACT
+    EVENTS -->|"WebSocket Events"| MOBILE
     
     %% Response Flow
     DB --> CACHE
-    FILESYSTEM --> FILES
-    CUSTOMDB --> EAV
-    CACHE --> TRANSFORM
-    TRANSFORM --> ROUTER
-    ROUTER --> CLI
+    CACHE --> HANDLER
+    HANDLER --> APIV1
+    HANDLER --> APIV2
+    APIV1 --> REQROUTER
+    APIV2 --> REQROUTER
+    REQROUTER --> WSGI
+    WSGI -->|"JSON Response"| REACT
+    WSGI -->|"JSON Response"| MOBILE
+    WSGI -->|"JSON Response"| INTEGRATION
     
     %% Styling
-    classDef clientStyle fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
-    classDef authStyle fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
-    classDef coreStyle fill:#e8f5e8,stroke:#388e3c,stroke-width:2px
-    classDef storageStyle fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+    classDef headlessStyle fill:#e3f2fd,stroke:#1976d2,stroke-width:3px
+    classDef bypassedStyle fill:#ffebee,stroke:#d32f2f,stroke-width:2px,stroke-dasharray: 5 5
+    classDef wsgiStyle fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    classDef apiStyle fill:#e8f5e8,stroke:#388e3c,stroke-width:2px
+    classDef authStyle fill:#fff8e1,stroke:#f57f17,stroke-width:2px
+    classDef coreStyle fill:#e0f2f1,stroke:#00695c,stroke-width:2px
+    classDef dataStyle fill:#fff3e0,stroke:#f57c00,stroke-width:2px
     classDef realtimeStyle fill:#fce4ec,stroke:#c2185b,stroke-width:2px
     
-    class CLI clientStyle
-     class AUTH,SESSION,APIKEY authStyle
-     class ROUTER,PERM,CRUD,EAV,FILES,HOOKS,VALID,TRANSFORM,CACHE coreStyle
-     class DB,FILESYSTEM,CUSTOMDB storageStyle
-     class WS,EVENTS realtimeStyle
+    class REACT,MOBILE,INTEGRATION headlessStyle
+    class WEBUI,FRAPPECALL bypassedStyle
+    class WSGI,REQROUTER wsgiStyle
+    class APIV1,APIV2,HANDLER apiStyle
+    class AUTH,WHITELIST authStyle
+    class PERM,CRUD,EAV,FILES,HOOKS,VALID coreStyle
+    class DB,FILESYSTEM,CACHE dataStyle
+    class WS,EVENTS realtimeStyle
  ```
 
-### 3.2 How Frappe REST API Works: Complete System Explanation
+### 3.2 How We Make Frappe Headless: Complete System Explanation
 
 #### **Overview**
-Frappe Framework provides a comprehensive REST API that enables complete headless operation through a sophisticated multi-layered architecture. The system processes requests through authentication, permission validation, business logic execution, and data persistence while maintaining real-time communication capabilities.
+Frappe Framework is traditionally a full-stack web application framework with an integrated web interface. **We are making it headless** by bypassing the web UI entirely and using only its REST API endpoints for all operations. This approach leverages Frappe's existing backend infrastructure while eliminating dependency on its frontend components.
 
-#### **1. Client Layer (🖥️ Entry Point)**
-**Components:**
-- React Frontend Applications
-- Mobile Applications
-- Third-party Integrations
-- API Testing Tools
+#### **1. Frontend Layer Architecture**
+
+**Custom Headless Clients (🖥️ Our Implementation):**
+- **React Frontend (API-only)**: Custom React application using only Frappe's REST APIs
+- **Mobile Applications (API-only)**: Native/hybrid mobile apps consuming Frappe APIs
+- **Third-party Integrations (API-only)**: External systems integrating via REST APIs
+- **API Testing Tools**: For development and validation
+
+**Bypassed Frappe Web UI (❌ Not Used):**
+- **Frappe Desk**: Traditional web interface completely bypassed
+- **Web Forms**: Standard Frappe forms not utilized
+- **Frontend JS**: `frappe.call()` and `frappe.xcall()` functions bypassed
+- **JavaScript Framework**: Frappe's client-side framework ignored
 
 **How it works:**
-Clients initiate HTTP requests to Frappe's REST API endpoints. The framework supports multiple client types simultaneously, each using standard HTTP methods (GET, POST, PUT, DELETE) to interact with the system.
+Our custom clients **completely bypass Frappe's web interface** and communicate exclusively through REST API endpoints. This eliminates dependency on Frappe's frontend JavaScript, Desk interface, and web forms, creating a truly headless operation.
+
+#### **2. WSGI Application Layer (🌐 Core Infrastructure)**
+
+**WSGI App (app.py):**
+- **Main Entry Point**: All HTTP requests enter through Frappe's WSGI application
+- **Request Routing**: Determines whether requests go to API handlers or legacy handlers
+- **Error Handling**: Centralized error processing and logging
+- **Middleware**: Session management, CSRF protection, rate limiting
+
+**Request Router:**
+- **API Detection**: Routes `/api/*` requests to API handlers
+- **Version Detection**: Determines API version (v1 or v2) from URL path
+- **Legacy Support**: Handles backward compatibility for old `cmd` parameter requests
+
+#### **3. API Layer - Versioned Architecture (📡 Modern & Legacy)**
+
+**API v1 (Legacy RPC Style):**
+- **Endpoints**: `/api/method/*`, `/api/resource/*`
+- **Style**: RPC-style method calls with backward compatibility
+- **Use Case**: Existing integrations and legacy client support
+
+**API v2 (Modern RESTful):**
+- **Endpoints**: `/api/v2/method/*`, `/api/v2/document/*`, `/api/v2/doctype/*`
+- **Features**: Enhanced query builder, controller customization, better REST semantics
+- **Use Case**: New applications and modern client implementations
+
+**Handler (execute_cmd):**
+- **Method Resolution**: Locates and validates the target method
+- **Whitelisting Check**: Ensures method is decorated with `@frappe.whitelist()`
+- **Parameter Processing**: Handles form data and JSON payloads
+
+#### **4. Authentication & Security Layer (🔐 Multi-layered Protection)**
+
+**Authentication Methods:**
+- **Session-based**: Traditional web session authentication
+- **API Key**: Token-based authentication for headless clients
+- **OAuth**: Third-party authentication integration
+- **CSRF Protection**: Automatic CSRF token validation
+
+**Method Whitelisting:**
+- **Decorator-based**: `@frappe.whitelist()` decorator required for API access
+- **Security**: Prevents unauthorized method execution
+- **Granular Control**: Method-level access control
 
 **Example Request:**
 ```http
-POST /api/resource/ToDo
+POST /api/v2/document/ToDo
 Content-Type: application/json
 Authorization: token api_key:api_secret
+X-Frappe-CSRF-Token: csrf_token_value
 
 {
   "description": "Complete project documentation",
@@ -201,16 +294,11 @@ Authorization: token api_key:api_secret
 }
 ```
 
-#### **2. Authentication Layer (🔐 Security Gateway)**
-**Components:**
-- **Session-based Authentication**: Uses cookies for web applications
-- **API Key Authentication**: Token-based for programmatic access
-
-**How it works:**
-1. **Session Authentication**: Client logs in via `/api/method/login`, receives session cookie, uses cookie for subsequent requests
-2. **API Key Authentication**: Client includes `Authorization: token api_key:api_secret` header in requests
-3. Authentication layer validates credentials against user database
-4. Failed authentication returns HTTP 401; successful authentication proceeds to permission checking
+**Our Headless Implementation:**
+1. **For React Apps**: Use session authentication via `/api/method/login` for user-based access
+2. **For Mobile/Integration**: Use API key authentication with `Authorization: token api_key:api_secret` headers
+3. **Bypassing Web Login**: We skip Frappe's web login forms entirely, using direct API authentication
+4. **Security**: Leverage Frappe's existing user management and permission system without the web interface
 
 **Security Features:**
 - Automatic session expiration
@@ -218,59 +306,59 @@ Authorization: token api_key:api_secret
 - Rate limiting per user/key
 - Audit logging of authentication attempts
 
-#### **3. API Router (🚦 Traffic Director)**
-**Endpoint Patterns:**
-- `/api/resource/{doctype}` - Resource-based operations
-- `/api/method/{method_name}` - Custom method calls
-- `/api/v2/document/{doctype}` - Enhanced document API
-- `/files/{filename}` - Direct file access
+#### **3. Frappe's REST API Router (🚦 Backend Utilization)**
+**Available Endpoints (Used in Headless Mode):**
+- `/api/resource/{doctype}` - Primary CRUD operations for our headless clients
+- `/api/method/{method_name}` - Custom business logic execution
+- `/api/v2/document/{doctype}` - Enhanced document operations
+- `/files/{filename}` - Direct file access without web interface
 
-**How it works:**
-1. Receives authenticated requests
-2. Parses URL patterns to determine operation type
-3. Routes to appropriate handler (CRUD, EAV, Files)
-4. Applies HTTP method semantics (GET=read, POST=create, etc.)
-5. Extracts parameters, filters, and request body data
+**Our Headless Approach:**
+1. **Direct API Access**: Our clients call these endpoints directly, bypassing web routes
+2. **No Web Dependencies**: We avoid `/desk`, `/app`, and other web-specific routes
+3. **Pure REST Communication**: All operations performed via HTTP methods (GET, POST, PUT, DELETE)
+4. **JSON-only Responses**: No HTML rendering, only JSON data exchange
+5. **Stateless Operation**: Each API call is independent, no web session dependencies
 
-#### **4. Permission Engine (🛡️ Access Control)**
-**Role-based Security:**
-- User roles and permissions stored in database
-- DocType-level permissions (read, write, create, delete)
-- Field-level permissions for sensitive data
-- Custom permission logic via hooks
+#### **4. Frappe's Permission Engine (🛡️ Backend Security Utilized)**
+**Existing Security Features (Leveraged Headlessly):**
+- **Role-based Access Control**: Frappe's existing user roles work seamlessly with API calls
+- **DocType Permissions**: Create, read, update, delete permissions enforced via API
+- **Field-level Security**: Sensitive field access controlled through API responses
+- **Custom Permission Logic**: Business rules applied regardless of access method
 
-**How it works:**
-1. Queries user's roles from database
-2. Checks DocType permissions against user roles
-3. Validates field-level access for requested operations
-4. Applies custom permission logic if defined
-5. Returns HTTP 403 for denied access; proceeds for granted access
+**Headless Security Benefits:**
+1. **No Web Vulnerabilities**: Eliminates XSS, CSRF, and other web-specific security risks
+2. **API-only Attack Surface**: Reduced security surface compared to full web application
+3. **Consistent Permissions**: Same permission logic applies whether accessed via web or API
+4. **Granular Control**: Field-level permissions work in API responses
+5. **Audit Trail**: All API access logged with user context
 
-#### **5. Business Logic Layer (📋 Core Operations)**
+#### **5. Frappe's Backend Core (📋 Utilized Without Web UI)**
 
-**A. CRUD Operations (📋)**
-- **Create**: Validates data, applies business rules, inserts records
-- **Read**: Applies filters, executes queries, formats responses
-- **Update**: Validates changes, applies business rules, updates records
-- **Delete**: Checks dependencies, performs soft/hard deletion
+**A. CRUD Operations (📋) - API-Driven**
+- **Create**: All validation and business rules work through API calls
+- **Read**: Complex filtering and querying via API parameters
+- **Update**: Partial and full updates through REST endpoints
+- **Delete**: Dependency checking and cascade deletion via API
 
-**B. EAV/Custom Fields (🏗️)**
-- **Dynamic Schema**: Add/modify fields without database migration
-- **Custom Field API**: Create, update, delete field definitions
-- **Runtime Integration**: Custom fields seamlessly integrated with standard fields
-- **Validation**: Type checking and constraint enforcement for custom fields
+**B. Custom Fields/EAV (🏗️) - Dynamic Schema via API**
+- **Headless Schema Management**: Add/modify fields through API calls only
+- **Runtime Field Creation**: Custom fields created without touching web interface
+- **API Integration**: Custom fields appear in API responses automatically
+- **Validation**: Type checking works seamlessly in headless mode
 
-**C. File Operations (📁)**
-- **Upload**: Multipart form handling, file storage, metadata creation
-- **Download**: File retrieval with proper headers and streaming
-- **Management**: File listing, organization, and deletion
-- **Security**: Access control and privacy settings
+**C. File Operations (📁) - Web-Free File Management**
+- **API Upload**: File uploads via `/api/method/upload_file` endpoint
+- **Direct Download**: File access through `/files/` URLs without web interface
+- **Programmatic Management**: File operations entirely through API calls
+- **Security**: File permissions enforced in headless mode
 
-**D. Business Hooks (⚡)**
-- **Before/After Events**: Triggered during CRUD operations
-- **Custom Logic**: Business rule enforcement and data transformation
-- **Integration Points**: External system notifications and updates
-- **Real-time Triggers**: WebSocket event broadcasting
+**D. Business Logic (⚡) - Backend Hooks Preserved**
+- **API-Triggered Events**: Before/after hooks fire during API operations
+- **Business Rules**: All custom logic preserved in headless operation
+- **Integration**: External system notifications work via API triggers
+- **Real-time Events**: WebSocket events triggered by API operations
 
 #### **6. Data Processing (🔄 Data Pipeline)**
 
@@ -389,7 +477,7 @@ Authorization: token api_key:api_secret
 - Comprehensive logging for debugging
 - Health check endpoints for monitoring
 
-This architecture provides a robust, scalable, and feature-rich REST API that supports complete headless operation while maintaining the flexibility and power of the Frappe Framework.
+This approach demonstrates how we can transform Frappe from a traditional web framework into a powerful headless backend by strategically utilizing its REST API layer while completely bypassing its web interface components. The result is a robust, scalable headless operation that maintains all of Frappe's business logic and data management capabilities.
 
 ---
 
